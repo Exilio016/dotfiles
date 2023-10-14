@@ -1,5 +1,8 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(display-battery-mode 1)
+(setq display-time-day-and-date t)
+(display-time-mode 1)
 
 (when (>= emacs-major-version 24)
   (progn
@@ -12,19 +15,18 @@
 
   (when (< emacs-major-version 27) (package-initialize)))
 
-(require 'evil)
-(evil-mode 1)
+(require 'use-package)
+(setq use-package-always-ensure t)
 
-(load-theme 'monokai-pro t)
+(use-package evil
+  :init
+  (evil-mode 1))
 
-(setq explicit-shell-file-name "/usr/bin/zsh")
-(setq shell-file-name "zsh")
-(setq explicit-zsh-args '("--login" "--interactive"))
-(defun zsh-shell-mode-setup ()
-  (setq-local comint-process-echoes t))
-(add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
+(use-package monokai-pro-theme
+  :config 
+  (load-theme 'monokai-pro t))
 
-
+(use-package exwm)
 (require 'exwm)
 (require 'exwm-config)
 (exwm-config-default)
@@ -32,26 +34,22 @@
 (add-hook 'exwm-randr-screen-change-hook
 	  (lambda ()
 	    (if (string= "true\n" (shell-command-to-string "xrandr | awk '/HDMI-2 connected/ {print \"true\"}'"))
-		(progn
-		  (start-process-shell-command
-		   "xrandr" nil "xrandr --output eDP-1 --mode 1600x900 --pos 1920x578 --rotate normal --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --primary --mode 1920x1080 --pos 0x0 --rotate normal")
-		  (setq exwm-randr-workspace-output-plist '(0 "HDMI-2" 1 "eDP-1" 2 "HDMI-2" 3 "eDP-1" 4 "HDMI-2" 5 "eDP-1" 6 "HDMI-2" 7 "eDP-1" 8 "HDMI-2")))
-	      (progn
-		(start-process-shell-command
-		 "xrandr" nil "xrand --output eDP-1 --mode 1600x900 --pos 0x0 --rotate normal")
-		(setq exwm-randr-workspace-output-plist '(0 "eDP-1")))
-		)))
+		  (setq exwm-randr-workspace-output-plist '(0 "HDMI-2" 1 "eDP-1" 2 "HDMI-2" 3 "eDP-1" 4 "HDMI-2" 5 "eDP-1" 6 "HDMI-2" 7 "eDP-1" 8 "HDMI-2"))
+		(setq exwm-randr-workspace-output-plist '(0 "eDP-1")))))
 (setq exwm-workspace-warp-cursor t)
 (setq exwm-workspace-number 8)
 (exwm-randr-enable)
+(require 'exwm-systemtray)
+(exwm-systemtray-enable)
 
-(require 'xml)
-(defun test ()
-  (let ((menu (with-temp-buffer
-		(insert (shell-command-to-string "xdgmenumaker -f compizboxmenu"))
-		(libxml-parse-xml-region (point-min) (point-max)))))
-    (dolist (element (dom-by-tag menu 'menu))
-      (print (cdr (car (nth 1 element)))))))
+
+;; (require 'xml)
+;; (defun test ()
+;;   (let ((menu (with-temp-buffer
+;; 		(insert (shell-command-to-string "xdgmenumaker -f compizboxmenu"))
+;; 		(libxml-parse-xml-region (point-min) (point-max)))))
+;;     (dolist (element (dom-by-tag menu 'menu))
+;;       (print (cdr (car (nth 1 element)))))))
 
 
 (server-start)
@@ -84,33 +82,65 @@
   (let ((command-parts (split-string command "[ ]+")))
     (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
 
-(run-in-background "nm-applet")
 (run-in-background "pasystray")
-(run-in-background "picom --config $HOME/.config/picom.conf")
+(run-in-background "nm-applet")
+(run-in-background "picom --config /etc/xdg/picom.conf")
+(run-in-background "xfsettingsd")
+(run-in-background "xsetroot -cursor_name left_ptr")
 
-(global-display-line-numbers-mode t)
-(which-key-setup-side-window-bottom)
-(which-key-mode)
-(setq which-key-idle-delay 0)
+(use-package display-line-numbers
+  :init
+  (global-display-line-numbers-mode t)
+  :custom
+  (display-line-numbers-type 'relative))
 
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(use-package which-key
+  :config
+  (which-key-setup-side-window-bottom)
+  :custom
+  (which-key-idle-delay 0)
+  :init
+  (which-key-mode))
 
-(ivy-mode)
-(setq ivy-use-virtual-buffer t)
-(setq enable-recursive-minibuffers t)
-(global-set-key "\C-s" 'swiper)
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "<f6>") 'ivy-resume)
-(counsel-mode)
-(require 'ivy-rich)
-(ivy-rich-mode 1)
+(use-package rainbow-delimiters
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
+(use-package diminish)
+
+(use-package ivy
+  :diminish ivy-mode
+  :init
+  (ivy-mode)
+  :custom
+  (ivy-use-virtual-buffer t)
+  (enable-recursive-minibuffers t)
+  :bind
+  ("C-s" . 'swiper)
+  ("C-c C-r" . 'ivy-resume)
+  ("<f6>" . 'ivy-resume))
+
+(use-package counsel
+  :diminish counsel-mode
+  :init
+  (counsel-mode))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+(use-package company
+  :diminish company-mode
+)
 ;; LSP
-(add-hook 'c-mode-hook #'lsp)
-(setq lsp-keymap-prefix "C-c l")
-(add-hook 'after-init-hook 'global-company-mode)
-(require 'lsp-java)
-(add-hook 'java-mode-hook #'lsp)
+(use-package lsp-mode
+  :config
+  (add-hook 'c-mode-hook #'lsp)
+  (add-hook 'after-init-hook 'global-company-mode))
+
+(use-package lsp-java 
+  :config
+  (add-hook 'java-mode-hook #'lsp))
 
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
@@ -118,7 +148,13 @@
 (global-auto-revert-mode 1)
 (recentf-mode 1)
 
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(counsel-projectile-mode)
+(use-package projectile
+  :diminish projectile-mode
+  :init
+  (projectile-mode +1)
+  :bind
+  ("C-c p" . 'projectile-command-map))
 
+(use-package counsel-projectile
+  :init
+  (counsel-projectile-mode))

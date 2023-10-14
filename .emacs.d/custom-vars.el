@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(magit counsel-projectile projectile lsp-java company lsp-ui lsp-mode ivy-rich counsel ivy rainbow-delimiters which-key cmake-mode monokai-pro-theme exwm evil))
+   '(diminish magit counsel-projectile projectile lsp-java company lsp-ui lsp-mode ivy-rich counsel ivy rainbow-delimiters which-key cmake-mode monokai-pro-theme exwm evil))
  '(projectile-completion-system 'ivy))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
