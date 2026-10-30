@@ -1,0 +1,24 @@
+/* Global Widget Styles */
+QWidget {
+    background-color: {background};
+    color: {color7};
+}
+
+/* Text Fields, Inputs, and Menus (Fixes System Tray Popups) */
+QMenu, QMenuBar, QComboBox, QLineEdit, QTextEdit {
+    background-color: {color0};
+    color: {color7};
+    border: 1px solid {color1};
+}
+
+QMenu::item:selected {
+    background-color: {color1};
+    color: {color15};
+}
+
+QPushButton {
+    background-color: {color1};
+    color: {color15};
+    border-radius: 4px;
+    padding: 4px;
+}

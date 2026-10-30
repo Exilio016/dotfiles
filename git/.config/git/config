@@ -1,0 +1,5 @@
+[user]
+	email = "him@brunoflaviof.com"
+	name = "Bruno Flávio Ferreira"
+[push]
+	autoSetupRemote = true
