@@ -11,3 +11,7 @@ Each folder contains the configuration for that program. For example to apply th
 ```bash
 stow --no-folding nvim
 ```
+You can apply all configs using the helper script:
+```bash
+./apply.sh
+```
