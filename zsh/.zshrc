@@ -56,6 +56,8 @@ export GPG_TTY=$TTY
 
 alias -- ga='git add'
 alias -- gap='git add -p'
+alias -- gr='git restore'
+alias -- grp='git restore -p'
 alias -- gc='git commit'
 alias -- gcp='git cherry-pick'
 alias -- gs='git status'

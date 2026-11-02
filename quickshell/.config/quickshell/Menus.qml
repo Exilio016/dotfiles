@@ -104,7 +104,7 @@ Rectangle {
                         else if (percentage == 1)
                             icon = "  ";
                         if (UPower.onBattery)
-                            return "";
+                            return icon;
                         return icon + "󱐋";
                     }
                     text: Math.round(UPower.displayDevice.percentage * 100) + getBatteryIcon(UPower.displayDevice.percentage)
