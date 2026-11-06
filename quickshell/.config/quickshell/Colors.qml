@@ -1,1 +1,0 @@
-../../../../.cache/wal/Colors.qml
