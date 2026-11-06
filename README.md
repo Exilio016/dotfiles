@@ -15,3 +15,10 @@ You can apply all configs using the helper script:
 ```bash
 ./apply.sh
 ```
+## Tmpfiles
+For the pywal themes, I'm using systemd-tmpfiles to create the symlinks between `$HOME/.cache` and the `$HOME/.config` files.
+You may need to run the following command to generate symlinks after any update:
+```bash
+systemd-tmpfiles --user --create
+```
+This command is run automatically if you used the helper script
