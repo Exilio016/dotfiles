@@ -13,6 +13,7 @@ prefer-no-csd
 environment {
     QT_QPA_PLATFORM "wayland;xcb"
     QT_QPA_PLATFORMTHEME "qt6ct"
+    GTK_IM_MODULE "simple"
     DISPLAY ":0"
 }
 

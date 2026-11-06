@@ -22,13 +22,24 @@ local plugins = {
         },
     },
     {
-        'saghen/blink.cmp', branch = 'v1',
+        'saghen/blink.cmp',
+        branch = 'v1',
+        build = 'cargo build --release',
         opts = {
             keymap = { preset = 'super-tab' },
             sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
             signature = { enabled = true },
 
         },
+    },
+    {
+        "3rd/image.nvim",
+        build = false,
+        opts = {
+            backend = "kitty",
+            tmux_show_only_in_active_window = true,
+            processor = "magick_cli",
+        }
     },
     {
         "christoomey/vim-tmux-navigator",
@@ -276,7 +287,7 @@ dap.configurations.rust = {
       -- Dynamically find your active rustup toolchain's python script folder
       -- This works on Linux/macOS paths automatically
       local toolchain_lib = vim.fn.expand('~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/etc')
-      
+
       return {
         'python import sys',
         'python sys.path.insert(0, "' .. toolchain_lib .. '")',

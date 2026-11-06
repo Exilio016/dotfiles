@@ -1,0 +1,17 @@
+configuration {
+    show-icons: true;
+}
+
+@theme "/home/brunofl/.cache/wal/rofi.rasi"
+
+window {
+    width: 800px;
+    height: 600px;
+}
+
+element-icon {
+    size:                       80px;
+    horizontal-align:           0.5;
+    vertical-align:             0.5;
+    background-color:           transparent;
+}

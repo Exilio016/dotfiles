@@ -1,8 +1,11 @@
 font-family = "JetBrains Mono"
 font-size = 11.5
+theme = pywal
 confirm-close-surface = false
 window-padding-balance=true
 window-padding-y=0
+window-decoration = false
+shell-integration = zsh
 keybind = ctrl+shift+n=unbind
 keybind = ctrl+shift+o=unbind
 keybind = ctrl+shift+t=unbind
