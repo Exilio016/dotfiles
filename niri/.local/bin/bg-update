@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+SWAYBG=$(pgrep swaybg)
+FOLDER="$HOME/wallpapers"
+IMAGE=$(ls $FOLDER | grep -v "^current$" | while read -r img; do
+        echo -en "$img\0icon\x1f$FOLDER/$img\n"
+    done | rofi -dmenu -i -p "Select wallpaper" -theme $HOME/.config/rofi/preview.rasi)
+
+if [ -n "$IMAGE" ]; then 
+    if [ -n "$SWAYBG" ]; then
+        kill $SWAYBG
+    fi
+    nohup swaybg -i "$FOLDER/$IMAGE" > /dev/null 2>&1 &
+    wal --backend haishoku --cols16 dual -i "$FOLDER/$IMAGE"
+
+    if [ -f "$FOLDER/current" ]; then
+        rm "$FOLDER/current"
+    fi
+    ln -s "$FOLDER/$IMAGE" "$FOLDER/current"
+    tmux source-file "$HOME/.config/tmux/tmux.conf"
+    # makoctl reload
+
+    BROWSER=$(pgrep -f qutebrowser)
+    if [ -n "$BROWSER" ]; then
+        qutebrowser ":config-source"
+    fi
+
+    rm $HOME/.config/qt6ct/qt6ct.conf
+    stow --dir=$HOME/dotfiles --target=$HOME --restow qt 
+fi
